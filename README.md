@@ -14,5 +14,5 @@ To configure your system for development, first install Node.js and npm and
 then run `npm install`. This will install some dependencies using npm. The Environment
 I use is `Node 12.18` and `npm 6.14`.
 
-To run the scraper, simply run `node crawler.js`, the `output.json` will be generated directly in the root/crawler directory.
+To run the scraper, simply `cd crawler`, and then run `node crawler.js`, the `output.json` will be generated directly in the root/crawler directory.
  
