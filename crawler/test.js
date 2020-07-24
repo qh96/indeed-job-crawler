@@ -16,7 +16,6 @@ import puppeteer from 'puppeteer'
     };
     /**
      * 
-       
      Software grad
         https://www.indeed.com/jobs?q=software+grad&l=United+States&jt=fulltime&explvl=entry_level
 
