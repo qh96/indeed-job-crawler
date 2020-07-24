@@ -18,11 +18,11 @@ const wait = (ms) =>
 
 const urls = [
   "https://www.indeed.com/jobs?q=software+grad&l=United+States&jt=fulltime&explvl=entry_level",
-//   "https://www.indeed.com/jobs?q=software+college&l=United+States&jt=fulltime&explvl=entry_level",
-//   "https://www.indeed.com/jobs?q=software+university&l=United+States&jt=fulltime&explvl=entry_level",
-//   "https://www.indeed.com/jobs?q=software+graduate&l=United+States&jt=fulltime&explvl=entry_level",
-//   "https://www.indeed.com/jobs?q=entry+software&l=United+States&jt=fulltime&explvl=entry_level",
-//   "https://www.indeed.com/jobs?q=junior+developer&l=United+States&jt=fulltime&explvl=entry_level",
+  "https://www.indeed.com/jobs?q=software+college&l=United+States&jt=fulltime&explvl=entry_level",
+  "https://www.indeed.com/jobs?q=software+university&l=United+States&jt=fulltime&explvl=entry_level",
+  "https://www.indeed.com/jobs?q=software+graduate&l=United+States&jt=fulltime&explvl=entry_level",
+  "https://www.indeed.com/jobs?q=entry+software&l=United+States&jt=fulltime&explvl=entry_level",
+  "https://www.indeed.com/jobs?q=junior+developer&l=United+States&jt=fulltime&explvl=entry_level",
 ];
 
 const titleSelector = "h2.title";
@@ -46,7 +46,7 @@ class Crawler extends EventEmitter {
   }
 
   /**
-   * Initize browser
+   * Init browser
    * @returns {Promise<void>}
    * @private
    */
@@ -149,7 +149,7 @@ class Crawler extends EventEmitter {
             date: date,
             senorityLevel: level,
             employmentType: type,
-            industries: "N/A",
+            industries: "Not Applied",
           });
         }
       }
@@ -219,13 +219,6 @@ class Crawler extends EventEmitter {
         employmentType: employmentType,
         industries: industries
       });
-      // console.log(
-      //   `Title='${title}'`,
-      //   `Company='${company}'`,
-      //   `Place='${place}'`,
-      //   `Date='${date}'`,
-      //   `Link='${link}'`
-      // );
     }
   );
 
