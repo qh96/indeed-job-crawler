@@ -24,7 +24,7 @@ const urls = [
 
 const titleSelector = 'h2.title';
 const companySelector = 'span.company';
-const locationSelector = 'div.location';
+const locationSelector = '.location';
 const dateSelector = 'span.date';
 
 const paginationMax = 2;
@@ -63,7 +63,7 @@ class Crawler extends EventEmitter{
                 ],
                 defaultViewport: null,
                 pipe: true,
-                slowMo: 10,
+                slowMo: 100,
             },
             this._options
         )
@@ -80,14 +80,18 @@ class Crawler extends EventEmitter{
         const page = await this._browser.newPage();
         
 
-        for (const url in urls){
+        for (const url of urls){
             await page.goto(url);
             
-            const jobCount = await page.evaluate(
-                companySelector => document.querySelectorAll(companySelector).length,
-                companySelector
-            )
-            for (paginationIndex = 0; paginationIndex < paginationMax; paginationIndex++){
+            
+            let paginationIndex = 0;
+            let jobIndex = 0;
+            for (paginationIndex; paginationIndex < paginationMax; paginationIndex++){
+
+                const jobCount = await page.evaluate(
+                    companySelector => document.querySelectorAll(companySelector).length,
+                    companySelector
+                )
 
                 const nextPageUrl = await page.evaluate(
                     _ => document.querySelector(`a[aria-label='Next']`).href
@@ -95,20 +99,26 @@ class Crawler extends EventEmitter{
                 await page.goto(nextPageUrl);
 
                 let title, link, company, place, type = "Full-Time", level = "Entry Level", date;
-                for (jobIndex = 0; jobIndex < jobCount; jobIndex++){
+                for (jobIndex; jobIndex < jobCount; jobIndex++){
                     [company, place, date, title, link] = await page.evaluate(
                         (
                             companySelector,
                             locationSelector,
                             dateSelector,
                             titleSelector,
+                            jobIndex,
                         ) => {
+                            const cpny = document.querySelectorAll(companySelector)[jobIndex];
+                            const loca = document.querySelectorAll(locationSelector)[jobIndex];
+                            const dt = document.querySelectorAll(dateSelector)[jobIndex];
+                            const tt = document.querySelectorAll(titleSelector)[jobIndex];
+                            const nxt = document.querySelectorAll('a.jobtitle')[jobIndex];
                             return [
-                                document.querySelectorAll(companySelector)[jobIndex].innerText,
-                                document.querySelectorAll(locationSelector)[jobIndex].innerText,
-                                document.querySelectorAll(dateSelector)[jobIndex].innerText,
-                                document.querySelectorAll(titleSelector)[jobIndex].innerText,
-                                document.querySelectorAll('a.jobtitle')[0].href,
+                                cpny ? cpny.innerText : "Not Applied",
+                                loca ? loca.innerText : "Not Applied",
+                                dt ? dt.innerText : "Not Applied",
+                                tt ? tt.innerText : "Not Applied",
+                                nxt ? nxt.href : "Not Applied",
                             ]
                         },
                         companySelector,
@@ -134,36 +144,42 @@ class Crawler extends EventEmitter{
     }
 
     run = async() => {
-        if (this._state === states.NOT_INITIALIZED){
-            await this._init();
-        }else if (this._state == states.INITIALIZING){
-            const timeout = 10000;
-            const waitTime = 10;
-            let elapsed = 0;
+        try {
+            if (this._state === states.NOT_INITIALIZED){
+                await this._init();
+            }else if (this._state == states.INITIALIZING){
+                const timeout = 10000;
+                const waitTime = 10;
+                let elapsed = 0;
 
-            while(_state !== states.initialized) {
-                await wait(waitTime);
-                elapsed += waitTime;
+                while(_state !== states.initialized) {
+                    await wait(waitTime);
+                    elapsed += waitTime;
 
-                if (elapsed >= timeout) {
-                    throw new Error(`Initialize timeout exceeded: ${timeout}ms`);
+                    if (elapsed >= timeout) {
+                        throw new Error(`Initialize timeout exceeded: ${timeout}ms`);
+                    }
                 }
             }
+            await this._run();
         }
-        await _run();
+        catch(err){
+            //TODO
+            console.log(err.message);
+        }
     }
 
     close = async() => {
-        _browser && _browser.removeAllListeners() && await _browser.close();
-        _browser = undefined;
-        _state = states.notInitialized;
+        this._browser && this._browser.removeAllListeners() && await this._browser.close();
+        this._browser = undefined;
+        this._state = states.NOT_INITIALIZED;
     }
 }
 
 (
     async() => {
         let crawler = new Crawler({});
-        crawler.on(events.custom.data, ({ link, title, company, place, senorityLevel, date,  employmentType, industries}) => {
+        crawler.on(customEvents.data, ({ link, title, company, place, senorityLevel, date,  employmentType, industries}) => {
             console.log(
                 `Title='${title}'`,
                 `Company='${company}'`,
@@ -176,5 +192,7 @@ class Crawler extends EventEmitter{
         await Promise.all([
             crawler.run()
         ])
+
+        await crawler.close();
     }
-)
+)();
