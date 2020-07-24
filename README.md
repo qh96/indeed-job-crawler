@@ -4,6 +4,8 @@ This is a web crawler targeting indeed.com, fetching the lastest full-time softw
 The keywords includes software grad, entry Software, Software university, Software graduate, Software college, junior developer,
 will be used for indeed.com job search.
 
+如果你感觉有用的话请帮忙 star~
+
 **Only for self study purpose. No commercial usage allowed**
 
 ## Usage
