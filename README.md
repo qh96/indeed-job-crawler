@@ -1,12 +1,12 @@
 # Indeed Job Crawler
 This is a web crawler targeting indeed.com, fetching the lastest full-time software engineer job information for the new graduates.
 
-The keywords includes software grad, entry Software, Software university, Software graduate, Software college, junior developer,
+The keywords include software grad, entry Software, Software university, Software graduate, Software college and junior developer,
 will be used for indeed.com job search.
 
-如果你感觉有用的话请帮忙 star~
+多谢看官赏脸 🐶 顺便求个 star🐶
 
-**Only for self study purpose. No commercial usage allowed**
+**Only for self study purpose. No commercial usage permitted**
 
 ## Usage
 
